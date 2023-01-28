@@ -3,7 +3,8 @@ export interface MovieData {
   adult: boolean;
   overview: string;
   release_date: string;
-  genre_ids: number[];
+  genre_ids?: number[];
+  genres?: { id: number; name: string }[];
   id: number;
   original_title: string;
   original_language: string;
@@ -13,4 +14,14 @@ export interface MovieData {
   vote_count: number;
   video: boolean;
   vote_average: number;
+}
+
+export interface MovieListItem {
+  id: number;
+  title: string;
+}
+
+export enum TrendingTime {
+  DAY = 'day',
+  WEEK = 'week',
 }

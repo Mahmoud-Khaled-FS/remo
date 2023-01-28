@@ -1,13 +1,14 @@
 import { config } from 'dotenv';
 import { Telegraf } from 'telegraf';
-import commands from './commands';
-import hears from './hear';
+import botService from './commands/index';
+import 'reflect-metadata';
+import AppDataSource from './service/database';
 config();
 
 (async () => {
   const app = new Telegraf(process.env.BOT_TOKEN as string);
-  app.use(commands);
-  app.use(hears);
+  app.use(botService);
+  await AppDataSource.initialize();
   app.launch();
   process.once('SIGINT', () => app.stop('SIGINT'));
   process.once('SIGTERM', () => app.stop('SIGTERM'));

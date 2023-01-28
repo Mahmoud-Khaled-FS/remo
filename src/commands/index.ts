@@ -1,8 +1,16 @@
 import { Composer } from 'telegraf';
-import { startService } from '../service/commands';
+import commands from './commands';
+import hears from './hears';
+import actions from './actions';
+import { getUserData } from './middleware';
 
-const commands = new Composer();
+const botService = new Composer();
 
-commands.start(startService);
+botService.use(getUserData);
 
-export default commands;
+botService.use(commands);
+
+botService.use(hears);
+botService.use(actions);
+
+export default botService;
