@@ -58,8 +58,6 @@ export async function changeLanguageAction(ctx: Ctx) {
         .where('id = :id', { id: (<any>ctx).user.id })
         .execute();
     }
-    //@ts-ignore
-    console.log(ctx.user.lang);
     await ctx.reply(`Language set to ${lang === 'ar' ? 'العربية' : 'English'}`);
   } catch {
     ctx.reply('something wrong happend');

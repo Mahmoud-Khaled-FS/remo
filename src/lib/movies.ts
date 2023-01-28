@@ -18,7 +18,6 @@ class Movies {
     try {
       const subUrl = '/search/movie';
       const result = await axios.get(`${this.generateUrl(subUrl)}&query=${name}`);
-      // console.log(result.data);
       return result.data.results[0] as MovieData;
     } catch {
       return null;

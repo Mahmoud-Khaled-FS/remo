@@ -5,12 +5,6 @@ import actions from './actions';
 import { getUserData } from './middleware';
 
 const botService = new Composer();
-botService.on('message', (ctx, next) => {
-  console.log(ctx.from.first_name);
-  //@ts-ignore
-  console.log(ctx.message.text);
-  next();
-});
 botService.use(getUserData);
 
 botService.use(commands);
