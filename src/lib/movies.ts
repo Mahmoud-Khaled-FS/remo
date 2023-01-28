@@ -1,20 +1,24 @@
 import axios from 'axios';
 import { MovieData, TrendingTime } from '../types/movies';
+import User from '../models/user';
 
 // const url = 'https://api.themoviedb.org/3';
 class Movies {
   private static url = 'https://api.themoviedb.org/3';
   private api_key = process.env.MOVIES_DB_API_KEY as string;
   private lang = 'en';
-  constructor(lang?: string) {
-    if (lang) {
-      this.lang = lang;
+  private adult = true;
+  constructor(user?: User) {
+    if (user) {
+      this.lang = user.lang;
+      this.adult = user.adult;
     }
   }
   async getMoviesByName(name: string) {
     try {
       const subUrl = '/search/movie';
       const result = await axios.get(`${this.generateUrl(subUrl)}&query=${name}`);
+      // console.log(result.data);
       return result.data.results[0] as MovieData;
     } catch {
       return null;
@@ -69,7 +73,9 @@ class Movies {
     }
   }
   private generateUrl(path: string) {
-    return `${Movies.url}${path}?api_key=${this.api_key}&language=${this.lang}`;
+    return `${Movies.url}${path}?api_key=${this.api_key}&append_to_response=videos&language=${this.lang}${
+      this.adult ? '&include_adult=true' : ''
+    }`;
   }
 }
 

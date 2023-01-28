@@ -5,8 +5,14 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 class User {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({
+    default: 'en',
+  })
   lang: string;
+  @Column({
+    default: 'true',
+  })
+  adult: boolean;
 }
 
 export default User;

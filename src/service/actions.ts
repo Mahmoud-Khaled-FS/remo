@@ -23,7 +23,7 @@ export async function cancelWithRemoveMessage(ctx: Ctx) {
 export async function getMovieByIdFromMessage(ctx: Ctx) {
   try {
     const id = splitMessageHears(ctx.match[0]);
-    const m = new Movies((<any>ctx).user?.lang);
+    const m = new Movies((<any>ctx).user);
     const movie = await m.getMovieById(+id);
     if (!movie) throw new Error();
     await ctx.deleteMessage(ctx.callbackQuery.message?.message_id);
@@ -36,7 +36,7 @@ export async function getRecommendationsForMovie(ctx: Ctx) {
   try {
     await ctx.editMessageReplyMarkup({ inline_keyboard: [] });
     const id = splitMessageHears(ctx.match[0]);
-    const m = new Movies((<any>ctx).user?.lang);
+    const m = new Movies((<any>ctx).user);
     const movies = await m.getMovieRecommendations(+id);
     if (!movies || movies.length === 0) throw new Error();
     return renderListMoviesInChat(ctx, movies);
@@ -58,7 +58,27 @@ export async function changeLanguageAction(ctx: Ctx) {
         .where('id = :id', { id: (<any>ctx).user.id })
         .execute();
     }
+    //@ts-ignore
+    console.log(ctx.user.lang);
     await ctx.reply(`Language set to ${lang === 'ar' ? 'العربية' : 'English'}`);
+  } catch {
+    ctx.reply('something wrong happend');
+  }
+}
+export async function changeAdultAction(ctx: Ctx) {
+  try {
+    await ctx.deleteMessage(ctx.callbackQuery.message?.message_id);
+    const adult = splitMessageHears(ctx.match[0]) === 'true';
+    if ((<any>ctx).user.adult !== adult) {
+      await AppDataSource.createQueryBuilder()
+        .update(User)
+        .set({
+          adult: adult,
+        })
+        .where('id = :id', { id: (<any>ctx).user.id })
+        .execute();
+    }
+    await ctx.reply(`${adult ? 'Adult filter work' : 'Adult filter stoped'}`);
   } catch {
     ctx.reply('something wrong happend');
   }
