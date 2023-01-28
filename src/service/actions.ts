@@ -23,7 +23,6 @@ export async function cancelWithRemoveMessage(ctx: Ctx) {
 export async function getMovieByIdFromMessage(ctx: Ctx) {
   try {
     const id = splitMessageHears(ctx.match[0]);
-    console.log(id);
     const m = new Movies((<any>ctx).user?.lang);
     const movie = await m.getMovieById(+id);
     if (!movie) throw new Error();
@@ -59,7 +58,6 @@ export async function changeLanguageAction(ctx: Ctx) {
         .where('id = :id', { id: (<any>ctx).user.id })
         .execute();
     }
-    console.log(lang);
     await ctx.reply(`Language set to ${lang === 'ar' ? 'العربية' : 'English'}`);
   } catch {
     ctx.reply('something wrong happend');
