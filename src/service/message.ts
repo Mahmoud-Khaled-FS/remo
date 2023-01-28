@@ -12,8 +12,6 @@ type Ctx = NarrowedContext<
 
 export async function getMovieFromMessage(ctx: Ctx) {
   try {
-    console.log(ctx.from.first_name);
-    console.log(ctx.message.text);
     const movieName = splitMessageHears(ctx.message.text);
     const m = new Movies((<any>ctx).user?.lang);
     const movie = await m.getMoviesByName(movieName);
@@ -25,8 +23,6 @@ export async function getMovieFromMessage(ctx: Ctx) {
 }
 export async function getMoviesListFromMessage(ctx: Ctx) {
   try {
-    console.log(ctx.from.first_name);
-    console.log(ctx.message.text);
     const nameSearch = splitMessageHears(ctx.message.text);
     const m = new Movies((<any>ctx).user?.lang);
     const movies = await m.getListMoviesByName(nameSearch);
@@ -39,8 +35,6 @@ export async function getMoviesListFromMessage(ctx: Ctx) {
 
 export async function getTrendingMoviesListFromMessage(ctx: Ctx) {
   try {
-    console.log(ctx.from.first_name);
-    console.log(ctx.message.text);
     const time = splitMessageHears(ctx.message.text).toLowerCase();
     if (!['day', 'week'].includes(time)) {
       return await ctx.reply("Choose between 'day' or 'week'");
@@ -56,8 +50,6 @@ export async function getTrendingMoviesListFromMessage(ctx: Ctx) {
 
 export async function getRandomMovieFromMessage(ctx: Ctx) {
   try {
-    console.log(ctx.from.first_name);
-    console.log(ctx.message.text);
     const m = new Movies((<any>ctx).user?.lang);
     const movie = await m.getRandomMovie();
     if (!movie) throw new Error();
