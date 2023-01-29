@@ -1,14 +1,15 @@
 import { Context } from 'telegraf';
 import { formatMovie, formatMovieLink, formatMoviesListMessageHeader } from '../lib/format';
 import { MovieData, MovieListItem } from '../types/movies';
+import { chunk } from 'lodash';
 
 export function createButtonsForListMovies(movies: MovieListItem[]) {
-  const buttons = [];
-  buttons.push(movies.slice(0, 5).map((m, i) => ({ text: String(i + 1), callback_data: 'id:' + m.id })));
-  if (movies.length > 5) {
-    buttons.push(movies.slice(5).map((m, i) => ({ text: String(i + 6), callback_data: 'id:' + m.id })));
-  }
-  return buttons;
+  const buttons = movies.map((m, i) => ({ text: String(i + 1), callback_data: 'id:' + m.id }));
+  // buttons.push(movies.slice(0, 5).));
+  // if (movies.length > 5) {
+  //   buttons.push(movies.slice(5).map((m, i) => ({ text: String(i + 6), callback_data: 'id:' + m.id })));
+  // }
+  return chunk(buttons, 5);
 }
 
 export async function renderMovieInChat(ctx: Context, movie: MovieData) {

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { MovieData, TrendingTime } from '../types/movies';
 import User from '../models/user';
+import { sample } from 'lodash';
 
 // const url = 'https://api.themoviedb.org/3';
 class Movies {
@@ -65,8 +66,19 @@ class Movies {
       const subUrl = `/movie/popular`;
       const page = randomInt(1, 100);
       const result = await axios.get(`${this.generateUrl(subUrl)}&page=${page}`);
-      const movie = randomInt(0, Math.min(result.data.results.length, 19));
-      return result.data.results[movie] as MovieData;
+      return sample(result.data.results) as MovieData;
+    } catch {
+      return null;
+    }
+  }
+  async getRandomMovieWithGenre(id: string) {
+    try {
+      const subUrl = `/discover/movie`;
+      const page = randomInt(1, 100);
+      const result = await axios.get(
+        `${this.generateUrl(subUrl)}&page=${page}&with_genres=${id}&sort_by=popularity.desc`,
+      );
+      return sample(result.data.results) as MovieData;
     } catch {
       return null;
     }

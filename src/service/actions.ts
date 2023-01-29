@@ -81,3 +81,16 @@ export async function changeAdultAction(ctx: Ctx) {
     ctx.reply('something wrong happend');
   }
 }
+
+export async function getMovieByGenreFromMessage(ctx: Ctx) {
+  try {
+    await ctx.deleteMessage(ctx.callbackQuery.message?.message_id);
+    const id = splitMessageHears(ctx.match[0]);
+    const m = new Movies((<any>ctx).user);
+    const movie = await m.getRandomMovieWithGenre(id);
+    if (!movie) throw new Error();
+    await renderMovieInChat(ctx, movie);
+  } catch {
+    ctx.reply('something wrong happend');
+  }
+}

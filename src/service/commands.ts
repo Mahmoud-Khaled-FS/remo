@@ -1,6 +1,8 @@
 import { Context, NarrowedContext } from 'telegraf';
 import { Update, Message } from 'telegraf/typings/core/types/typegram';
 import { commandsList, hearsList } from '../constants/commands';
+import { genreList } from '../constants/genre';
+import { chunk } from 'lodash';
 
 type Ctx = NarrowedContext<
   Context<Update>,
@@ -52,4 +54,17 @@ export async function changeAdult(ctx: Ctx) {
     },
   });
   // Hello, ${ctx.message?.from.first_name}\nI'm @${ctx.me}, I can advise you to choose a movie to watch.
+}
+
+export async function getGenresListService(ctx: Ctx) {
+  const lang = (<any>ctx).user.lang;
+  const genreListButton = genreList.map((g) => ({
+    text: lang === 'ar' ? g.ar_name : g.name,
+    callback_data: 'id_g:' + g.id,
+  }));
+  await ctx.reply('Choose genre', {
+    reply_markup: {
+      inline_keyboard: chunk(genreListButton, 2),
+    },
+  });
 }
