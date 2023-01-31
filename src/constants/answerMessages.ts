@@ -8,8 +8,7 @@ For more commands, use /help command by default language "English", you can chan
 #version 0.4beta
 Join our group to communicate with the programmer or report bugs.
 https://t.me/+Y6zhcvygMfgxNzc8
-',
-ar: 'اهلا %%`,
+`,
     ar: `مرحبا %%!👋
 أنا ريمو، صديقتك الجديدة الذي تشاركك الأفلام، يمكنني مساعدتك في العثور على الفيلم الذي تبحث عنه وإعطائك بعض المعلومات حول هذه الأفلام.
 ابدأ الآن بإرسال اسم فيلمك المفضل مسبقًا بـ m:
