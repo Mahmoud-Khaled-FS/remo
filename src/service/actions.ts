@@ -94,3 +94,16 @@ export async function getMovieByGenreFromMessage(ctx: Ctx) {
     ctx.reply('something wrong happend');
   }
 }
+
+export async function getTrailerFromMessage(ctx: Ctx) {
+  try {
+    const trailerSearchParam = splitMessageHears(ctx.match[0]);
+    const m = new Movies();
+    const trailerUrl = await m.getTrailer(trailerSearchParam);
+    if (!trailerUrl) throw new Error();
+    await ctx.reply(trailerUrl);
+    await ctx.answerCbQuery();
+  } catch {
+    ctx.reply('cannot found trailer for this movie');
+  }
+}

@@ -28,7 +28,7 @@ class Movies {
     try {
       const subUrl = '/search/movie';
       const result = await axios.get(`${this.generateUrl(subUrl)}&query=${name}`);
-      return (result.data.results as any[]).map((r) => ({ id: r.id, title: r.title })).slice(0, 10);
+      return (result.data.results as MovieData[]).slice(0, 10);
     } catch {
       return null;
     }
@@ -47,7 +47,7 @@ class Movies {
     try {
       const subUrl = `/trending/movie/${time}`;
       const result = await axios.get(`${this.generateUrl(subUrl)}`);
-      return (result.data.results as any[]).map((r) => ({ id: r.id, title: r.title })).slice(0, 10);
+      return (result.data.results as MovieData[]).slice(0, 10);
     } catch {
       return null;
     }
@@ -56,7 +56,7 @@ class Movies {
     try {
       const subUrl = `/movie/${id}/recommendations`;
       const result = await axios.get(`${this.generateUrl(subUrl)}`);
-      return (result.data.results as any[]).map((r) => ({ id: r.id, title: r.title })).slice(0, 10);
+      return (result.data.results as MovieData[]).slice(0, 10);
     } catch {
       return null;
     }
@@ -80,6 +80,21 @@ class Movies {
       );
       return sample(result.data.results) as MovieData;
     } catch {
+      return null;
+    }
+  }
+
+  async getTrailer(search: string) {
+    try {
+      const url = `https://www.googleapis.com/youtube/v3/search?key=${process.env.YOUTUBE_API_KEY}&type=video&part=snippet&q=${search}'trailer'`;
+      // const url = `https://www.googleapis.com/youtube/v3/search?key=${
+      //   process.env.YOUTUBE_API_KEY
+      // }&type=video&snippet.title=${title + 'trailer'}`;
+      const result = await axios.get(url);
+      const id = result.data.items[0].id.videoId;
+      const videoUrl = `https://www.youtube.com/watch?v=${id}`;
+      return videoUrl;
+    } catch (err) {
       return null;
     }
   }

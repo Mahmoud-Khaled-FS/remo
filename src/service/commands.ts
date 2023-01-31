@@ -3,6 +3,8 @@ import { Update, Message } from 'telegraf/typings/core/types/typegram';
 import { commandsList, hearsList } from '../constants/commands';
 import { genreList } from '../constants/genre';
 import { chunk } from 'lodash';
+import { formatAnswerToSend } from '../lib/format';
+import { commandsAnswer } from '../constants/answerMessages';
 
 type Ctx = NarrowedContext<
   Context<Update>,
@@ -11,11 +13,9 @@ type Ctx = NarrowedContext<
 
 export async function startService(ctx: Ctx) {
   try {
-    await ctx.reply(`
-    hello, ${ctx.message?.from.first_name}
-    `);
+    const answer = formatAnswerToSend((<any>ctx).user, commandsAnswer.start, [ctx.from.first_name]);
+    await ctx.reply(answer);
   } catch {}
-  // Hello, ${ctx.message?.from.first_name}\nI'm @${ctx.me}, I can advise you to choose a movie to watch.
 }
 
 export async function helpService(ctx: Ctx) {

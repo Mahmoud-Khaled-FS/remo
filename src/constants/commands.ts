@@ -4,16 +4,24 @@ export const commandsList = [
     description: 'Start the bot',
   },
   {
-    name: 'help',
-    description: 'Get info about using remo',
+    name: 'rand',
+    description: 'Random movie with specific genre',
+  },
+  {
+    name: 'genres',
+    description: 'Random movie with',
   },
   {
     name: 'setlang',
     description: 'Change the language of the bot',
   },
   {
-    name: 'rand',
-    description: 'Random movie',
+    name: 'adult',
+    description: 'filter adult movies',
+  },
+  {
+    name: 'help',
+    description: 'Get info about using remo',
   },
 ];
 export const hearsList = [

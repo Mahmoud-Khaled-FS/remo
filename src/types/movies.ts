@@ -16,11 +16,6 @@ export interface MovieData {
   vote_average: number;
 }
 
-export interface MovieListItem {
-  id: number;
-  title: string;
-}
-
 export enum TrendingTime {
   DAY = 'day',
   WEEK = 'week',
