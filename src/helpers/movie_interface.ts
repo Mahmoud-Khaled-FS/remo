@@ -17,8 +17,14 @@ export async function renderMovieInChat(ctx: Context, movie: MovieData) {
   const message = await ctx.reply('Loading...');
   await ctx.sendChatAction('typing');
   const year = new Date(movie.release_date).getFullYear();
+  const isGroup = ctx.chat?.type === 'group' || ctx.chat?.type === 'supergroup';
   if (movie.poster_path) {
-    await ctx.sendPhoto({ url: formatMovieLink(movie.poster_path), filename: movie.title });
+    await ctx.sendPhoto(
+      { url: formatMovieLink(movie.poster_path), filename: movie.title },
+      {
+        reply_to_message_id: isGroup ? ctx.message?.message_id : undefined,
+      },
+    );
   }
   await ctx.deleteMessage(message.message_id);
   const movieArrgs = getFormatMovieArgs(movie, (<any>ctx).user.lang);
