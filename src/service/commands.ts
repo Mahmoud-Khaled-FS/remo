@@ -1,10 +1,9 @@
 import { Context, NarrowedContext } from 'telegraf';
 import { Update, Message } from 'telegraf/typings/core/types/typegram';
 import { commandsList, hearsList } from '../constants/commands';
-import { genreList } from '../constants/genre';
-import { chunk } from 'lodash';
 import { formatAnswerToSend } from '../lib/format';
 import { commandsAnswer } from '../constants/answerMessages';
+import { renderGenresList } from '../helpers/movie_interface';
 
 type Ctx = NarrowedContext<
   Context<Update>,
@@ -57,14 +56,9 @@ export async function changeAdult(ctx: Ctx) {
 }
 
 export async function getGenresListService(ctx: Ctx) {
-  const lang = (<any>ctx).user.lang;
-  const genreListButton = genreList.map((g) => ({
-    text: lang === 'ar' ? g.ar_name : g.name,
-    callback_data: 'id_g:' + g.id,
-  }));
-  await ctx.reply('Choose genre', {
-    reply_markup: {
-      inline_keyboard: chunk(genreListButton, 2),
-    },
-  });
+  try {
+    await renderGenresList(ctx);
+  } catch {
+    ctx.reply("sorry i can't found movies");
+  }
 }

@@ -15,70 +15,84 @@ class Movies {
       this.adult = user.adult;
     }
   }
-  async getMoviesByName(name: string) {
+  async getMoviesByName(name: string): Promise<MovieData | null> {
     try {
       const subUrl = '/search/movie';
       const result = await axios.get(`${this.generateUrl(subUrl)}&query=${name}`);
-      return result.data.results[0] as MovieData;
+      return result.data.results[0];
     } catch {
       return null;
     }
   }
-  async getListMoviesByName(name: string) {
+  async getListMoviesByName(name: string): Promise<MovieData[] | null> {
     try {
       const subUrl = '/search/movie';
       const result = await axios.get(`${this.generateUrl(subUrl)}&query=${name}`);
-      return (result.data.results as MovieData[]).slice(0, 10);
+      return result.data.results.slice(0, 10);
     } catch {
       return null;
     }
   }
-  async getMovieById(id: number) {
+  async getMovieById(id: number): Promise<MovieData | null> {
     try {
       const subUrl = `/movie/${id}`;
       const result = await axios.get(`${this.generateUrl(subUrl)}`);
       if (!result.data) throw new Error();
-      return result.data as MovieData;
+      return result.data;
     } catch {
       return null;
     }
   }
-  async getTrendingMoviesList(time: TrendingTime) {
+  async getTrendingMoviesList(time: TrendingTime): Promise<MovieData[] | null> {
     try {
       const subUrl = `/trending/movie/${time}`;
       const result = await axios.get(`${this.generateUrl(subUrl)}`);
-      return (result.data.results as MovieData[]).slice(0, 10);
+      return result.data.results.slice(0, 10);
     } catch {
       return null;
     }
   }
-  async getMovieRecommendations(id: number) {
+  async getMovieRecommendations(id: number): Promise<MovieData[] | null> {
     try {
       const subUrl = `/movie/${id}/recommendations`;
       const result = await axios.get(`${this.generateUrl(subUrl)}`);
-      return (result.data.results as MovieData[]).slice(0, 10);
+      return result.data.results.slice(0, 10);
     } catch {
       return null;
     }
   }
-  async getRandomMovie() {
+  async getRandomMovie(): Promise<MovieData | null> {
     try {
       const subUrl = `/movie/popular`;
       const page = randomInt(1, 100);
       const result = await axios.get(`${this.generateUrl(subUrl)}&page=${page}`);
-      return sample(result.data.results) as MovieData;
+      return sample(result.data.results);
     } catch {
       return null;
     }
   }
-  async getRandomMovieWithGenre(id: string) {
+  async getRandomMovieWithGenre(id: string): Promise<MovieData | null> {
     try {
+      const maxPage = id.includes(',') ? 10 : 100;
       const subUrl = `/discover/movie`;
-      const page = randomInt(1, 100);
-      const result = await axios.get(
+      const page = randomInt(1, maxPage);
+      let result = await axios.get(
         `${this.generateUrl(subUrl)}&page=${page}&with_genres=${id}&sort_by=popularity.desc`,
       );
-      return sample(result.data.results) as MovieData;
+      if (result.data.total_pages < page && result.data.results.length === 0) {
+        result = await axios.get(`${this.generateUrl(subUrl)}&page=1&with_genres=${id}&sort_by=popularity.desc`);
+      }
+      return sample(result.data.results);
+    } catch (err) {
+      return null;
+    }
+  }
+
+  async getCast(id: string): Promise<string[] | null> {
+    try {
+      const subUrl = `/movie/${id}/credits`;
+      const result = await axios.get(`${this.generateUrl(subUrl)}`);
+      return result.data.cast.slice(0, 10).map((c: any) => c.name);
     } catch {
       return null;
     }
@@ -87,9 +101,6 @@ class Movies {
   async getTrailer(search: string) {
     try {
       const url = `https://www.googleapis.com/youtube/v3/search?key=${process.env.YOUTUBE_API_KEY}&type=video&part=snippet&q=${search}'trailer'`;
-      // const url = `https://www.googleapis.com/youtube/v3/search?key=${
-      //   process.env.YOUTUBE_API_KEY
-      // }&type=video&snippet.title=${title + 'trailer'}`;
       const result = await axios.get(url);
       const id = result.data.items[0].id.videoId;
       const videoUrl = `https://www.youtube.com/watch?v=${id}`;

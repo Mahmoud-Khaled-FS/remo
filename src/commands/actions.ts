@@ -1,31 +1,18 @@
 import { Composer } from 'telegraf';
-import {
-  cancelMessage,
-  changeAdultAction,
-  changeLanguageAction,
-  getMovieByGenreFromMessage,
-  getMovieByIdFromMessage,
-  getRecommendationsForMovie,
-  getTrailerFromMessage,
-} from '../service/actions';
-import {
-  changeAdultRegexp,
-  changeLangRegexp,
-  movieGenreIdActionRegexp,
-  movieIdActionRegexp,
-  movieRecActionRegexp,
-  trailerRegexp,
-} from '../constants/regexp';
+import * as action from '../service/actions';
+import * as regex from '../constants/regexp';
 
 const actions = new Composer();
 
-actions.action('cancel', cancelMessage);
-actions.action('cancel_delete', cancelMessage);
-actions.action(movieIdActionRegexp, getMovieByIdFromMessage);
-actions.action(movieGenreIdActionRegexp, getMovieByGenreFromMessage);
-actions.action(movieRecActionRegexp, getRecommendationsForMovie);
-actions.action(trailerRegexp, getTrailerFromMessage);
-actions.action(changeLangRegexp, changeLanguageAction);
-actions.action(changeAdultRegexp, changeAdultAction);
+actions.action('cancel', action.cancelMessage);
+actions.action('cancel_delete', action.cancelMessage);
+actions.action(regex.movieIdActionRegexp, action.getMovieByIdFromMessage);
+actions.action(regex.movieGenreIdActionRegexp, action.getMovieByGenreFromMessage);
+actions.action(regex.movieRecActionRegexp, action.getRecommendationsForMovie);
+actions.action(regex.trailerRegexp, action.getTrailerFromMessage);
+actions.action(regex.changeLangRegexp, action.changeLanguageAction);
+actions.action(regex.changeAdultRegexp, action.changeAdultAction);
+actions.action(regex.topCastActionRegexp, action.getCastFromMessage);
+actions.action(regex.movieGenreAndActionRegexp, action.genreAndOrFromMessage);
 
 export default actions;

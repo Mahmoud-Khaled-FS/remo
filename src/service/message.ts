@@ -3,7 +3,7 @@ import Movies from '../lib/movies';
 import { Update, Message } from 'telegraf/typings/core/types/typegram';
 import { splitMessageHears } from '../helpers/splitMessageHears';
 import { TrendingTime } from '../types/movies';
-import { renderListMoviesInChat, renderMovieInChat } from '../helpers/movie_interface';
+import { renderGenresList, renderListMoviesInChat, renderMovieInChat } from '../helpers/movie_interface';
 
 type Ctx = NarrowedContext<
   Context<Update>,
@@ -56,5 +56,13 @@ export async function getRandomMovieFromMessage(ctx: Ctx) {
     return renderMovieInChat(ctx, movie);
   } catch {
     ctx.reply('can not find this movie :(');
+  }
+}
+export async function getRandomMovieWithGenreFromMessage(ctx: Ctx) {
+  try {
+    const genreType = splitMessageHears(ctx.message.text);
+    await renderGenresList(ctx, genreType.toLocaleLowerCase());
+  } catch {
+    ctx.reply("sorry i can't found movies");
   }
 }

@@ -2,9 +2,10 @@ import { Context, NarrowedContext } from 'telegraf';
 import { CallbackQuery, Update } from 'telegraf/typings/core/types/typegram';
 import { splitMessageHears } from '../helpers/splitMessageHears';
 import Movies from '../lib/movies';
-import { renderListMoviesInChat, renderMovieInChat } from '../helpers/movie_interface';
+import { renderGenresList, renderListMoviesInChat, renderMovieInChat } from '../helpers/movie_interface';
 import AppDataSource from './database';
 import User from '../models/user';
+import { genreList } from '../constants/genre';
 
 type Ctx = NarrowedContext<
   Context<Update> & {
@@ -94,6 +95,26 @@ export async function getMovieByGenreFromMessage(ctx: Ctx) {
     ctx.reply('something wrong happend');
   }
 }
+export async function genreAndOrFromMessage(ctx: Ctx) {
+  try {
+    await ctx.deleteMessage(ctx.callbackQuery.message?.message_id);
+    const type = ctx.match.groups?.type.toLowerCase();
+    const idsGenreList = splitMessageHears(ctx.match[0]).split(type === 'and' ? ',' : '|');
+    const idsGenresName = idsGenreList
+      .map((id) => {
+        const genre = genreList.find((g) => g.id === +id);
+        if ((<any>ctx).user.lang === 'ar') {
+          return genre?.ar_name;
+        }
+        return genre?.name;
+      })
+      .join(type === 'and' ? ' and ' : ' or ');
+    ctx.reply('Selected genres: ' + idsGenresName);
+    await renderGenresList(ctx, type, ctx.match[0]);
+  } catch {
+    ctx.reply('something wrong happend');
+  }
+}
 
 export async function getTrailerFromMessage(ctx: Ctx) {
   try {
@@ -105,5 +126,20 @@ export async function getTrailerFromMessage(ctx: Ctx) {
     await ctx.answerCbQuery();
   } catch {
     ctx.reply('cannot found trailer for this movie');
+  }
+}
+
+export async function getCastFromMessage(ctx: Ctx) {
+  try {
+    const movieId = splitMessageHears(ctx.match[0]);
+    const m = new Movies();
+    const costNames = await m.getCast(movieId);
+    if (!costNames || costNames.length === 0) throw new Error();
+    const costListText = costNames.map((c, i) => `${i + 1}. ${c}\n`).join('');
+    await ctx.reply(costListText);
+    await ctx.answerCbQuery();
+    return;
+  } catch {
+    ctx.reply('cannot found cost for this movie');
   }
 }
