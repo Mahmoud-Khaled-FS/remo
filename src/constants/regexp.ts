@@ -15,6 +15,6 @@ export const topCastActionRegexp = new RegExp('^top_cast:[0-9]*', 'g');
 export const askAddLinkActionRegexp = new RegExp('^ask_link:[0-9]*', 'g');
 export const acceptLinkActionRegexp = new RegExp('^acc_link:.*', 'g');
 export const urlRegexp = new RegExp(
-  '[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)',
+  /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
   'gi',
 );
