@@ -13,6 +13,11 @@ class User {
     default: 'true',
   })
   adult: boolean;
+  @Column({
+    default: null,
+    nullable: true,
+  })
+  waitingLink: string;
 }
 
 export default User;

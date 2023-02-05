@@ -14,5 +14,8 @@ actions.action(regex.changeLangRegexp, action.changeLanguageAction);
 actions.action(regex.changeAdultRegexp, action.changeAdultAction);
 actions.action(regex.topCastActionRegexp, action.getCastFromMessage);
 actions.action(regex.movieGenreAndActionRegexp, action.genreAndOrFromMessage);
+actions.action(regex.movieLinkActionRegexp, action.getMovieLinkInTelegram);
+actions.action(regex.askAddLinkActionRegexp, action.askToAddLinkMovie);
+actions.action(regex.acceptLinkActionRegexp, action.acceptAddLinkMovie);
 
 export default actions;

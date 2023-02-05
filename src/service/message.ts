@@ -1,14 +1,10 @@
-import { Context, NarrowedContext } from 'telegraf';
 import Movies from '../lib/movies';
-import { Update, Message } from 'telegraf/typings/core/types/typegram';
 import { splitMessageHears } from '../helpers/splitMessageHears';
 import { TrendingTime } from '../types/movies';
 import { renderGenresList, renderListMoviesInChat, renderMovieInChat } from '../helpers/movie_interface';
-
-type Ctx = NarrowedContext<
-  Context<Update>,
-  { message: Update.New & Update.NonChannel & Message.TextMessage; update_id: number }
->;
+import AppDataSource from './database';
+import { Ctx } from '../types/telegraf';
+import { sendLinkMovieAdmin } from '../helpers/admin_message';
 
 export async function getMovieFromMessage(ctx: Ctx) {
   try {
@@ -64,5 +60,25 @@ export async function getRandomMovieWithGenreFromMessage(ctx: Ctx) {
     await renderGenresList(ctx, genreType.toLocaleLowerCase());
   } catch {
     ctx.reply("sorry i can't found movies");
+  }
+}
+
+export async function getLinksFromUser(ctx: Ctx) {
+  try {
+    const movieId = (<any>ctx).user.waitingLink;
+    if (!movieId) {
+      return;
+    }
+    (<any>ctx).user.waitingLink = null;
+    await AppDataSource.manager.save((<any>ctx).user);
+    const m = new Movies();
+    const movie = await m.getMovieById(movieId);
+    if (!movie) throw Error();
+    await sendLinkMovieAdmin(ctx, movie);
+    (<any>ctx).user.waitingLink = null;
+    await AppDataSource.manager.save((<any>ctx).user);
+    ctx.reply('Thanks! The link will be reviewed.');
+  } catch {
+    ctx.reply('something wrong happend');
   }
 }

@@ -35,6 +35,7 @@ export async function renderMovieInChat(ctx: Context, movie: MovieData) {
           { text: 'Trailer', callback_data: `trailer:${movie.original_title}+${year}` },
           { text: 'Top Cast', callback_data: `top_cast:${movie.id}` },
         ],
+        [{ text: 'Link', callback_data: 'm_link:' + movie.id }],
       ],
     },
   });

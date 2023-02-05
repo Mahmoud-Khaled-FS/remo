@@ -2,8 +2,9 @@ import { Context, NarrowedContext } from 'telegraf';
 import { CallbackQuery, Update } from 'telegraf/typings/core/types/typegram';
 import { splitMessageHears } from '../helpers/splitMessageHears';
 import Movies from '../lib/movies';
+import MovieDB from '../models/movies';
 import { renderGenresList, renderListMoviesInChat, renderMovieInChat } from '../helpers/movie_interface';
-import AppDataSource from './database';
+import AppDataSource, { movieRepository } from './database';
 import User from '../models/user';
 import { genreList } from '../constants/genre';
 
@@ -141,5 +142,59 @@ export async function getCastFromMessage(ctx: Ctx) {
     return;
   } catch {
     ctx.reply('cannot found cost for this movie');
+  }
+}
+
+export async function getMovieLinkInTelegram(ctx: Ctx) {
+  try {
+    const movieId = splitMessageHears(ctx.match[0]);
+    const movie = await movieRepository.findOneBy({
+      id: +movieId,
+    });
+    if (!movie) {
+      ctx.reply("can't found link for this movie");
+      ctx.reply('want to add link for this movie?', {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: 'add', callback_data: 'ask_link:' + movieId },
+              { text: '❌', callback_data: 'cancel_delete' },
+            ],
+          ],
+        },
+      });
+      return;
+    }
+    ctx.reply('Movie Link', {
+      reply_markup: {
+        inline_keyboard: [[{ text: 'link', url: movie.link }]],
+      },
+    });
+  } catch {
+    ctx.reply('حدث خطأ ما.');
+  }
+}
+export async function askToAddLinkMovie(ctx: Ctx) {
+  try {
+    const movieId = splitMessageHears(ctx.match[0]);
+    (<any>ctx).user.waitingLink = movieId;
+    await AppDataSource.manager.save((<any>ctx).user);
+    ctx.reply('Alright, a new movie Link. Please send a link in message.');
+    return;
+  } catch (err) {
+    ctx.reply('حدث خطأ ما.');
+  }
+}
+export async function acceptAddLinkMovie(ctx: Ctx) {
+  try {
+    const [link, id] = splitMessageHears(ctx.match[0]).split('|');
+    const movie = new MovieDB();
+    movie.id = +id;
+    movie.link = link;
+    await AppDataSource.manager.save(movie);
+    ctx.reply('movie link added');
+    return;
+  } catch (err) {
+    ctx.reply('حدث خطأ ما.');
   }
 }

@@ -7,6 +7,11 @@
     "dev": "nodemon ./src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "nodemonConfig": {
+    "ignore": [
+      "session.json"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
