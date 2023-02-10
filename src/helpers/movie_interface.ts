@@ -1,5 +1,5 @@
 import { Context } from 'telegraf';
-import { getFormatMovieArgs, formatMovieLink, getFormatListMoviesArgs, formatAnswerToSend } from '../lib/format';
+import { getFormatMovieArgs, getFormatListMoviesArgs, formatAnswerToSend, formatMovieLink } from '../lib/format';
 import { MovieData } from '../types/movies';
 import { chunk } from 'lodash';
 import { messageAnswer } from '../constants/answerMessages';

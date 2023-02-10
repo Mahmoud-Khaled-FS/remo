@@ -2,7 +2,7 @@ import { Context, NarrowedContext } from 'telegraf';
 import { CallbackQuery, Update } from 'telegraf/typings/core/types/typegram';
 import { splitMessageHears } from '../helpers/splitMessageHears';
 import Movies from '../lib/movies';
-import MovieDB from '../models/movies';
+// import MovieDB from '../models/movies';
 import { renderGenresList, renderListMoviesInChat, renderMovieInChat } from '../helpers/movie_interface';
 import AppDataSource, { movieRepository } from './database';
 import User from '../models/user';
@@ -185,16 +185,16 @@ export async function askToAddLinkMovie(ctx: Ctx) {
     ctx.reply('حدث خطأ ما.');
   }
 }
-export async function acceptAddLinkMovie(ctx: Ctx) {
-  try {
-    const [link, id] = splitMessageHears(ctx.match[0]).split('|');
-    const movie = new MovieDB();
-    movie.id = +id;
-    movie.link = link;
-    await AppDataSource.manager.save(movie);
-    ctx.reply('movie link added');
-    return;
-  } catch (err) {
-    ctx.reply('حدث خطأ ما.');
-  }
-}
+// export async function acceptAddLinkMovie(ctx: Ctx) {
+//   try {
+//     const [messageId, id] = splitMessageHears(ctx.match[0]).split('|');
+//     const movie = new MovieDB();
+//     movie.id = +id;
+//     movie.link = ctx.copyMessage(ctx.chat?.id, {});
+//     // await AppDataSource.manager.save(movie);
+//     ctx.reply('movie link added');
+//     return;
+//   } catch (err) {
+//     ctx.reply('حدث خطأ ما.');
+//   }
+// }

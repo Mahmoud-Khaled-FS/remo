@@ -69,6 +69,7 @@ export async function getLinksFromUser(ctx: Ctx) {
     if (!movieId) {
       return;
     }
+    console.log(ctx.message.text);
     (<any>ctx).user.waitingLink = null;
     await AppDataSource.manager.save((<any>ctx).user);
     const m = new Movies();
@@ -78,7 +79,7 @@ export async function getLinksFromUser(ctx: Ctx) {
     (<any>ctx).user.waitingLink = null;
     await AppDataSource.manager.save((<any>ctx).user);
     ctx.reply('Thanks! The link will be reviewed.');
-  } catch {
+  } catch (err) {
     ctx.reply('something wrong happend');
   }
 }
