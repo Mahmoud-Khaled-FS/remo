@@ -8,7 +8,7 @@ Ex. M: Avengers Endgame
 
 For more commands, use /help command by default language "English", you can change it to "Arabic" with /setlang command
 
-#version 0.6beta
+#version 0.7beta
 Join our group to communicate with the programmer or report bugs.
 https://t.me/+Y6zhcvygMfgxNzc8
 `,

@@ -2,9 +2,9 @@ import { Context, NarrowedContext } from 'telegraf';
 import { CallbackQuery, Update } from 'telegraf/typings/core/types/typegram';
 import { splitMessageHears } from '../helpers/splitMessageHears';
 import Movies from '../lib/movies';
-// import MovieDB from '../models/movies';
+import MovieDB from '../models/movies';
 import { renderGenresList, renderListMoviesInChat, renderMovieInChat } from '../helpers/movie_interface';
-import AppDataSource, { movieRepository } from './database';
+import AppDataSource, { linkRepository, movieRepository } from './database';
 import User from '../models/user';
 import { genreList } from '../constants/genre';
 
@@ -185,16 +185,21 @@ export async function askToAddLinkMovie(ctx: Ctx) {
     ctx.reply('حدث خطأ ما.');
   }
 }
-// export async function acceptAddLinkMovie(ctx: Ctx) {
-//   try {
-//     const [messageId, id] = splitMessageHears(ctx.match[0]).split('|');
-//     const movie = new MovieDB();
-//     movie.id = +id;
-//     movie.link = ctx.copyMessage(ctx.chat?.id, {});
-//     // await AppDataSource.manager.save(movie);
-//     ctx.reply('movie link added');
-//     return;
-//   } catch (err) {
-//     ctx.reply('حدث خطأ ما.');
-//   }
-// }
+
+export async function acceptAddLinkMovie(ctx: Ctx) {
+  try {
+    const [linkId, movieId] = splitMessageHears(ctx.match[0]).split('|');
+    let link = await linkRepository.findOneBy({
+      id: +linkId,
+    });
+    if (!link) throw new Error();
+    const movie = new MovieDB();
+    movie.id = +movieId;
+    movie.link = link.url;
+    await AppDataSource.manager.save(movie);
+    ctx.reply('movie link added');
+    return;
+  } catch (err) {
+    ctx.reply('حدث خطأ ما.');
+  }
+}

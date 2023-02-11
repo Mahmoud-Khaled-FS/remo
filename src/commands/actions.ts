@@ -16,6 +16,6 @@ actions.action(regex.topCastActionRegexp, action.getCastFromMessage);
 actions.action(regex.movieGenreAndActionRegexp, action.genreAndOrFromMessage);
 actions.action(regex.movieLinkActionRegexp, action.getMovieLinkInTelegram);
 actions.action(regex.askAddLinkActionRegexp, action.askToAddLinkMovie);
-// actions.action(regex.acceptLinkActionRegexp, action.acceptAddLinkMovie);
+actions.action(regex.acceptLinkActionRegexp, action.acceptAddLinkMovie);
 
 export default actions;

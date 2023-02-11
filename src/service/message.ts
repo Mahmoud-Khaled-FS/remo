@@ -5,6 +5,7 @@ import { renderGenresList, renderListMoviesInChat, renderMovieInChat } from '../
 import AppDataSource from './database';
 import { Ctx } from '../types/telegraf';
 import { sendLinkMovieAdmin } from '../helpers/admin_message';
+import { createLinkIDB } from '../helpers/create_link';
 
 export async function getMovieFromMessage(ctx: Ctx) {
   try {
@@ -69,13 +70,11 @@ export async function getLinksFromUser(ctx: Ctx) {
     if (!movieId) {
       return;
     }
-    console.log(ctx.message.text);
-    (<any>ctx).user.waitingLink = null;
-    await AppDataSource.manager.save((<any>ctx).user);
     const m = new Movies();
     const movie = await m.getMovieById(movieId);
     if (!movie) throw Error();
-    await sendLinkMovieAdmin(ctx, movie);
+    const link = await createLinkIDB(ctx.message.text, movie, ctx.from.first_name);
+    await sendLinkMovieAdmin(ctx, link);
     (<any>ctx).user.waitingLink = null;
     await AppDataSource.manager.save((<any>ctx).user);
     ctx.reply('Thanks! The link will be reviewed.');

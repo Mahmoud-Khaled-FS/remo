@@ -10,7 +10,7 @@ class User {
   })
   lang: string;
   @Column({
-    default: 'true',
+    default: true,
   })
   adult: boolean;
   @Column({
